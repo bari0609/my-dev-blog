@@ -3,6 +3,10 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
+import dynamic from 'next/dynamic';
+
+const MDEditor = dynamic(() => import("@uiw/react-md-editor"), { ssr: false });
+
 interface PostFormProps {
   id?: string;
 }
@@ -37,7 +41,7 @@ export default function PostFormClient({ id }: PostFormProps) {
 
   return (
     <div className="p-8">
-      <h1 className="text-2xl font-bold mb-4">{id ? "投稿編集" : "新規作成"}</h1>
+      <h1 className="text-2xl font-bold mb-4">{id ? "投稿編集" : "新規投稿"}</h1>
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <input
           type="text"
@@ -46,17 +50,18 @@ export default function PostFormClient({ id }: PostFormProps) {
           onChange={(e) => setPost({ ...post, title: e.target.value })}
           className="border p-2 rounded"
         />
-        <textarea
+        {/* <textarea
           placeholder="内容"
           value={post.content}
           onChange={(e) => setPost({ ...post, content: e.target.value })}
           className="border p-2 rounded"
-        />
+        /> */}
+        <MDEditor value={post.content} onChange={(value) => setPost({ ...post, content: value ?? "" })} height={400} />
         <button
           type="submit"
           className="px-4 py-2 bg-blue-500 text-white rounded"
         >
-          保存
+          {id ? "更新" : "投稿"}
         </button>
       </form>
     </div>
